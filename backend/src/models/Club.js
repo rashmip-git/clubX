@@ -1,4 +1,6 @@
 const mongoose =  require("mongoose");
+const Event = require("./Event");
+const Post = require("./Post");
 
 const clubSchema = new mongoose.Schema({
     clubName : {
@@ -80,11 +82,6 @@ const clubSchema = new mongoose.Schema({
         default: 0
     },
 
-    avgRating: {
-        type: Number,
-        default: 0
-    },
-
     isFeatured: {
         type: Boolean,
         default: false
@@ -100,5 +97,34 @@ const clubSchema = new mongoose.Schema({
 
 clubSchema.index({category : 1});
 clubSchema.index({clubName : "text", description : "text"});
+
+clubSchema.pre(
+    "deleteOne",
+    { document: true, query: false },
+    async function(next){
+
+        const clubId = this._id;
+
+        // DELETE EVENTS
+        const events = await Event.find({
+            club: clubId
+        });
+
+        for(const event of events){
+            await event.deleteOne();
+        }
+
+        // DELETE POSTS
+        const posts = await Post.find({
+            club: clubId
+        });
+
+        for(const post of posts){
+            await post.deleteOne();
+        }
+
+        next();
+    }
+);
 
 module.exports = mongoose.model("Club",clubSchema);

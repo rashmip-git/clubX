@@ -18,7 +18,7 @@ const createPost = async (req, res, next) => {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    const post = await post.create({
+    const post = await Post.create({
       club: clubId,
       caption,
       images,

@@ -15,7 +15,7 @@ const deleteRegistration = async (req,res,next) => {
         }
 
         registration.status = "cancelled";
-         await registration.save();
+        await registration.deleteOne();
 
         
          const event = await Event.findById(registration.event);

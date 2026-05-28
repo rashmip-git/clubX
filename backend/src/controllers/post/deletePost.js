@@ -9,12 +9,12 @@ const deletePost = async (req,res,next) => {
             return res.status(404).json({message : "post not found"});
         }
 
-        const club = await Club.findById(ppst.club);
+        const club = await Club.findById(post.club);
         if(req.user.role !== "admin" && club.clubHead.toString()!== req.user._id.toString()){
             return res.status(403).json({message : "not authorised"});
         }
 
-        await post.deleteOne();
+        await Post.deleteOne();
 
         if(club.totalPosts > 0){
             club.totalPosts -= 1;

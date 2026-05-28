@@ -10,6 +10,17 @@ const addFavorite = async (req,res,next) => {
             return res.status(404).json({message : "event not found"});
         }
 
+        const existing = await fav.findOne({
+    user: req.user._id,
+    event: eventId
+});
+
+if(existing){
+    return res.status(400).json({
+        message: "Already in favorites"
+    });
+}
+
         const f = await fav.create({
             user : req.user._id,
             event : eventId

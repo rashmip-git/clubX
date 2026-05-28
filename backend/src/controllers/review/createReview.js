@@ -29,6 +29,17 @@ const createReview = async (req,res,next) => {
             return res.status(404).json({message : "Not registered to review this event"});
         }
 
+        const existingReview = await Review.findOne({
+    user: req.user._id,
+    event: eventId
+});
+
+if(existingReview){
+    return res.status(400).json({
+        message: "You already reviewed this event"
+    });
+}
+
 
         const review = await Review.create({
             user : req.user._id,

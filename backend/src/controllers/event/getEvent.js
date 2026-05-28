@@ -58,7 +58,7 @@ const getEvent = async (req,res,next) => {
             .skip(skip)
             .limit(parseInt(limit));
 
-        const total = await event.countDocuments(filter);
+        const total = await Event.countDocuments(filter);
         res.status(200).json({
             total,
             page : Number(page),

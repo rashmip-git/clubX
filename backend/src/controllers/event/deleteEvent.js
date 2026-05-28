@@ -1,21 +1,25 @@
-const event = require("../../models/Event");
-const club = require("../../models/Club");
+const Event = require("../../models/Event");
+const Club = require("../../models/Club");
 
 const deleteEvent = async (req,res,next) => {
     try{
         const {id} = req.params;
 
-        const e = await event.findById(id);
-        if(!e){
+        const event = await Event.findById(id);
+        if(!event){
             return res.status(404).json({message : "event not found"});
         }
 
-        const c = await club.findById(e.club);
-        if(req.user.role !== "admin" && c.clubHead.toString() !== req.user._id.toString()){
+        const club = await Club.findById(event.club);
+        if(req.user.role !== "admin" && club.clubHead.toString() !== req.user._id.toString()){
             return res.status(403).json({message : "you are not authorised to delete the event"});
         }
+        if(club.totalEvents > 0){
+    club.totalEvents -= 1;
+    await club.save();
+}
 
-        await e.deleteOne();
+        await event.deleteOne();
         res.status(200).json({message : "event deleted sucessfully!!"});
 
     }

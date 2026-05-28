@@ -17,7 +17,7 @@ const getClubRegistration = async (req,res,next) =>{
         }
 
         const event = await Event.find({club : clubId});
-        const eventId = e.map(e=>e._id);
+        const eventId = event.map(e=>e._id);
         const registration = await Registration.find({event : {$in : eventId}}).populate("user","username email").populate("event","title date");
 
         res.status(200).json({count : registration.length,registration});

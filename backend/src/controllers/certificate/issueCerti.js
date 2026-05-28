@@ -3,6 +3,7 @@ const Event = require("../../models/Event");
 const Registration = require("../../models/Registration");
 const Club = require("../../models/Club");
 
+
 const issueCerti = async (req,res,next) => {
     try{
         const {eventId,userId,certificateUrl,certificateTitle} = req.body;
@@ -32,6 +33,17 @@ const issueCerti = async (req,res,next) => {
     if (!registration) {
       return res.status(400).json({ message: "User not registered" });
     }
+
+    const existingCertificate = await Certificate.findOne({
+    user: userId,
+    event: eventId
+});
+
+if(existingCertificate){
+    return res.status(400).json({
+        message: "Certificate already issued"
+    });
+}
 
     const certificate = await Certificate.create({
         user : userId,

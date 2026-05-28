@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 
+const Registration = require("./Registration");
+const Review = require("./Review");
+const Certificate = require("./Certificate");
+const Favorites = require("./Favorites");
+
 const eventSchema = new mongoose.Schema({
     title : {
         type : String,
@@ -67,10 +72,6 @@ const eventSchema = new mongoose.Schema({
         default: 0
     },
 
-    registrationOpen: {
-        type: Boolean,
-        default: true
-    },
 
      tags: [
         {
@@ -117,5 +118,30 @@ eventSchema.index({
     title: "text",
     description: "text"
 });
+eventSchema.pre(
+    "deleteOne",
+    { document: true, query: false },
+    async function(next){
 
+        const eventId = this._id;
+
+        await Registration.deleteMany({
+            event: eventId
+        });
+
+        await Review.deleteMany({
+            event: eventId
+        });
+
+        await Certificate.deleteMany({
+            event: eventId
+        });
+
+        await Favorites.deleteMany({
+            event: eventId
+        });
+
+        next();
+    }
+);
 module.exports = mongoose.model("Event",eventSchema);

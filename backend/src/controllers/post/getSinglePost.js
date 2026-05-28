@@ -1,5 +1,5 @@
 const Post = require("../../models/Post");
-const getSinglePost = async (reqres, nex) => {
+const getSinglePost = async (req,res, nex) => {
     try {
         const { id } = req.params;
         const post =

@@ -14,7 +14,7 @@ const toggleSavePost = async (req,res,next) => {
         const alreadySaved = user.savedPosts.includes(postId);
             
         if (alreadySaved) {
-            user.savedPosts =user.savedPosts.filter( id =>id.toString() !== postId);
+            user.savedPosts =user.savedPosts.filter( id =>id.toString() !== postId.toString());
             post.savesCount =Math.max( 0,post.savesCount - 1);
             await user.save();
             await post.save();

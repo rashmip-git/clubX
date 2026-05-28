@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const Comment = require("./Comments");
+
 
 const postSchema = new mongoose.Schema({
   club: {
@@ -63,5 +65,18 @@ const postSchema = new mongoose.Schema({
 postSchema.index({ createdAt: -1 });
 postSchema.index({ club: 1, createdAt: -1 });
 postSchema.index({ caption : "text"});
+
+postSchema.pre(
+    "deleteOne",
+    { document: true, query: false },
+    async function(next){
+
+        await Comment.deleteMany({
+            post: this._id
+        });
+
+        next();
+    }
+);
 
 module.exports = mongoose.model("Post", postSchema);

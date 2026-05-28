@@ -14,7 +14,7 @@ const updateEvent = async (req,res,next) =>{
             return res.status(403).json({message : "you are not authorised to update this event"});
         }
 
-        const updatedEvent = await event.findByIdAndUpdate(id,req.body, { new : true,runValidators:true}).populate("club","clubName");
+        const updatedEvent = await Event.findByIdAndUpdate(id,req.body, { new : true,runValidators:true}).populate("club","clubName");
 
         return res.status(200).json({message : "event updated successfully!!", event : updatedEvent});
     }

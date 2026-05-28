@@ -28,7 +28,7 @@ const getfeed = async (req,res,next) => {
         total,
         page : Number(page),
         pages : Math.ceil(total/limit),
-        count : p.length,
+        count : posts.length,
         posts
       });
 

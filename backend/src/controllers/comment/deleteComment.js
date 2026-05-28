@@ -1,4 +1,5 @@
 const Comment = require("../../models/Comments");
+const Post = require("../../models/Post");
 
 const deleteComment = async (req,res,next) => {
     try{
