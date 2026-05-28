@@ -1,8 +1,8 @@
-const registration = require("../../models/Registration");
+const Registration = require("../../models/Registration");
 
 const getAllRegistration = async(req,res,next) => {
     try{
-        const r = await registration.find()
+        const registration = await Registration.find()
         .populate("user","username email")
         .populate({
                 path: "event",
@@ -12,7 +12,7 @@ const getAllRegistration = async(req,res,next) => {
                     select: "clubName"
                 }
             });
-            res.status(200).json({count : r.length,r});
+            res.status(200).json({count : registration.length,registration});
 
     }
     catch(err){

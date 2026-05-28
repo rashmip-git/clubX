@@ -1,33 +1,38 @@
-const post = require("../../models/Post");
-const club = require("../../models/Club");
+const Post = require("../../models/Post");
+const Club = require("../../models/Club");
 
 const createPost = async (req, res, next) => {
   try {
-    const { clubId, caption, images } = req.body;
+    const { clubId, caption, images, taggedEvent, isPinned} = req.body;
 
-    const c = await club.findById(clubId);
-    if (!c) {
+    const club = await Club.findById(clubId);
+    if (!club) {
       return res.status(404).json({ message: "Club not found" });
     }
 
     // authorization
     if (
       req.user.role !== "admin" &&
-      c.clubHead.toString() !== req.user._id.toString()
+      club.clubHead.toString() !== req.user._id.toString()
     ) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    const p = await post.create({
+    const post = await post.create({
       club: clubId,
       caption,
       images,
+      taggedEvent,
+      isPinned,
       createdBy: req.user._id
     });
 
+    club.totalPosts += 1;
+    await club.save();
+
     res.status(201).json({
       message: "Post created successfully",
-      p
+      post
     });
 
   } catch (err) {

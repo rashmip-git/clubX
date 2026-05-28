@@ -6,6 +6,7 @@ const eventController = require("../controllers/event");
 
 
 router.get("/",eventController.getEvent);
+router.get("/:id", eventController.getSingleEvent);
 
 
 //router.use(protect);

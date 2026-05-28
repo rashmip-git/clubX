@@ -1,26 +1,30 @@
-const event = require("../../models/Event");
-const club = require("../../models/Club");
+const Event = require("../../models/Event");
+const Club = require("../../models/Club");
 
 const createEvent = async(req,res,next) => {
     try{
-        const {title,description,date,registrationDeadline,location,club : clubId} = req.body;
+        const {title,description,date,registrationDeadline,location,club : clubId,
+            category,bannerImage,mode,tags,} = req.body;
 
-        const c = await club.findById(clubId);
-        if(!c){
+        const club = await Club.findById(clubId);
+        if(!club){
             return res.status(404).json({message: "club not found"});
             
         }
 
-        if( req.user.role !== "admin" && c.clubHead.toString() !== req.user._id.toString()){
+        if( req.user.role !== "admin" && club.clubHead.toString() !== req.user._id.toString()){
             return res.status(403).json({message : "you are not authorised to create an event "});
         }
 
-        const e = await event.create({
-            title,date,description,location,club,createdBy : req.user._id
+        const event = await Event.create({
+            title,date,registrationDeadline,category,bannerImage,mode,tags,description,location,club : clubId,createdBy : req.user._id
         });
 
+        club.totalEvents += 1;
+        await club.save();
+
         res.status(201).json({message : "event created sucessfully!!",
-            e
+            event
         });
 
     }

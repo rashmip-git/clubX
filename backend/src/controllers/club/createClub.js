@@ -1,18 +1,23 @@
-const club = require("../../models/Club");
-const user = require("../../models/User");
+const Club = require("../../models/Club");
+const User = require("../../models/User");
 
 const createClub = async (req,res,next) => {
     try{
-        const {clubName,description,clubHead} = req.body;
+        const {clubName,description, category,
+            clubHead,
+            logo,
+            tags,
+            socialLinks,
+            contactEmail} = req.body;
 
         //check if club already exists
-        const existingClub = await club.findOne({clubName});
+        const existingClub = await Club.findOne({clubName});
         if(existingClub){
             return res.status(400).json({message : "club already exists"});
         }
 
         //check if clubhead exists
-        const head = await user.findById(clubHead);
+        const head = await User.findById(clubHead);
         if(!head){
             return res.status(404).json({message : "club head not found"});
         }
@@ -21,14 +26,18 @@ const createClub = async (req,res,next) => {
             return res.status(400).json({message:"user is not a club head"});
         }
 
-        const c = await club.create({
-            clubName,description,clubHead
-
+        const club = await Club.create({
+            clubName,description,category,
+            clubHead,
+            logo,
+            tags,
+            socialLinks,
+            contactEmail,
         });
 
-        res.status(201).json({message : "club created sucessfully!!",club : c});
+        await User.findByIdAndUpdate(clubHead,{$push : {joinedClubs : club._id}});
 
-
+        res.status(201).json({message : "club created sucessfully!!",club});
 
     }
     catch(err){

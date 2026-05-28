@@ -16,7 +16,33 @@ const commentSchema = new mongoose.Schema({
         required : true,
         trim : true,
         maxlength : 500
+    },
+    parentComment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comments",
+        default: null
+    },
+    likes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ],
+
+    likesCount: {
+        type: Number,
+        default: 0
+    },
+
+    isEdited: {
+        type: Boolean,
+        default: false
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
+
 
 },{timestamps:true});
 commentSchema.index({post : 1,createdAt : -1});

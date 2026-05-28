@@ -1,9 +1,10 @@
-const certificate = require("../../models/Certificate");
+const Certificate = require("../../models/Certificate");
 
 const getMyCertificates = async (req, res, next) => {
   try {
-    const c = await certificate.find({
-      user: req.user._id
+    const certificates = await Certificate.find({
+      user: req.user._id,
+      isValid : true
     })
       .populate({
         path: "event",
@@ -12,11 +13,13 @@ const getMyCertificates = async (req, res, next) => {
           path: "club",
           select: "clubName"
         }
-      });
+      }) .sort({
+                createdAt: -1
+            });
 
     res.status(200).json({
-      count: c.length,
-      c
+      count: certificates.length,
+      certificates
     });
 
   } catch (err) {

@@ -7,7 +7,7 @@ const clubController = require("../controllers/club");
 
 router.get("/",clubController.getClub);
 router.get("/my-club",protect,clubController.getClubByHead);
-
+router.get("/:id", clubController.getSingleClub);
 //router.use(protect);
 
 

@@ -1,6 +1,6 @@
-const review = require("../../models/Review");
-const event = require("../../models/Event");
-const registration = require("../../models/Registration");
+const Review = require("../../models/Review");
+const Event = require("../../models/Event");
+const Registration = require("../../models/Registration");
 
 const createReview = async (req,res,next) => {
     try{
@@ -8,38 +8,47 @@ const createReview = async (req,res,next) => {
         const {rating} = req.body;
         
         //check event exists
-        const e = await event.findById(eventId);
-        if(!e){
+        const event = await Event.findById(eventId);
+        if(!event){
             return res.status(404).json({message : "Event not found"});
         }
 
 
         //check event completed
-        if(new Date() < new Date(e.date)){
+        if(new Date() < new Date(event.date)){
             return res.status(400).json({message : "Event not completed yet"})
         }
 
 
         //check user registerd
-        const r = await registration.findOne({
+        const registration = await Registration.findOne({
             user : req.user._id,
             event : eventId
         });
-        if(!r){
+        if(!registration){
             return res.status(404).json({message : "Not registered to review this event"});
         }
 
 
-        const c = await review.create({
+        const review = await Review.create({
             user : req.user._id,
             event : eventId,
-            ratings
+            rating
         });
 
-        res.status(201).json({message : "Review added successfully!!",c});
+        const reviews =await Review.find({event: eventId});
 
+        const totalReviews = reviews.length;
 
+        const avgRating = reviews.reduce((sum, r) => sum + r.rating,0) / totalReviews;
 
+        event.totalReviews = totalReviews;
+
+        event.avgRating = avgRating.toFixed(1);
+
+        await event.save();
+
+        res.status(201).json({message : "Review added successfully!!",review});
     }
     catch(err){
         next(err);

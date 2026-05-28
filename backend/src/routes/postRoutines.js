@@ -5,7 +5,7 @@ const {authorize} = require('../middleware/roleMiddleware');
 const postController = require("../controllers/post");
 
 
-router.get("/club/:clubId",protect,postController.getClubPosts);
+router.get("/club/:clubId",postController.getClubPosts);
 router.get("/",postController.getfeed);
 
 
@@ -13,7 +13,10 @@ router.get("/",postController.getfeed);
 
 
 //protected route
-router.post("/", protect,postController.createPost);  
+router.post("/", protect,postController.createPost);
+router.get("/:id", postController.getSinglePost); 
+router.post("/:postId/like", protect, postController.toggleLike);
+router.post("/:postId/save", protect, postController.toggleSavePost);
 router.delete("/:id",protect,postController.deletePost);
 
 

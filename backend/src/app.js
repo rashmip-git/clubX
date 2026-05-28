@@ -11,6 +11,7 @@ const revRoutes = require("./routes/reviewRoutes");
 const certiRoutes = require("./routes/certificateRoutes");
 const postRoutes = require("./routes/postRoutines");
 const commentRoutes = require("./routes/commentRoutes");
+const userRoutes = require("./routes/userRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -22,10 +23,11 @@ app.use("/api/clubs",clubRoutes);
 app.use("/api/events",eventRoutes);
 app.use("/api/registration",registrationRoutes );
 app.use("/api/favorites",favRoutes);
-app.use("./api/rating",revRoutes);
-app.use("./api/certificate",certiRoutes);
-app.use("./api/posts",postRoutes);
-app.use("./api/comments",commentRoutes);
+app.use("/api/rating",revRoutes);
+app.use("/api/certificate",certiRoutes);
+app.use("/api/posts",postRoutes);
+app.use("/api/comments",commentRoutes);
+app.use("/api/users", userRoutes);
 
 
 app.get("/", (req, res) => {

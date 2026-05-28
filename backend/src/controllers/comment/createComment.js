@@ -1,25 +1,29 @@
-const comment = require("../../models/Comments");
-const post = require("../../models/Post");
+const Comment = require("../../models/Comments");
+const Post = require("../../models/Post");
 
 const createComment = async (req,res,next) => {
     try{
         const {postId} = req.params;
-        const {text} = req.body;
+        const {text,parentComment} = req.body;
 
-        const p = await post.findById(postId);
+        const post = await Post.findById(postId);
 
-        if(!p){
+        if(!post){
             return res.status(404).json({message:"post not found"});
         }
 
-        const c = await comment.create({
+        const comment = await Comment.create({
             post : postId,
             user : req.user._id,
-            text
+            text,
+            parentComment
         });
 
+         post.commentsCount += 1;
+         await post.save();
+
         res.status(201).json({
-            message : "comment added successfully!!",c
+            message : "comment added successfully!!",comment
         });
 
     }

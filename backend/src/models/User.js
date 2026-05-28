@@ -5,15 +5,20 @@ const userSchema = new mongoose.Schema(
   {
     username: { 
         type: String, 
-        required : true
+        required : true,
+        trim: true,
+        minlength: 3,
+        maxlength: 30
     },
 
     email: { 
         type: String, 
         required: true, 
         unique: true,
-        lowercase:true 
+        lowercase:true,
+        trim : true,
     },
+
     password: { 
         type: String, 
         required: true, 
@@ -25,6 +30,118 @@ const userSchema = new mongoose.Schema(
         enum : ["student","admin","clubHead"],
         default : "student",
         required : true
+    },
+
+    profileImage: {
+        type: String,
+        default:
+          "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+    },
+
+    /*coverImage: {
+        type: String,
+        default: ""
+    },*/
+
+    bio: {
+        type: String,
+        maxlength: 250,
+        default: ""
+    },
+
+    department: {
+        type: String,
+        default: ""
+    },
+
+    year: {
+        type: Number
+    },
+
+   /* usn: {
+        type: String,
+        unique: true,
+        sparse: true
+    },*/
+
+    /*phoneNumber: {
+        type: String,
+        default: ""
+    },*/
+
+    // SOCIAL LINKS
+
+    socialLinks: {
+       /* instagram: {
+            type: String,
+            default: ""
+        },*/
+
+        linkedin: {
+            type: String,
+            default: ""
+        },
+
+        github: {
+            type: String,
+            default: ""
+        }
+    },
+
+    // INTERESTS / SKILLS
+
+    interests: [
+        {
+            type: String
+        }
+    ],
+
+    skills: [
+        {
+            type: String
+        }
+    ],
+
+    // CLUBS
+
+    joinedClubs: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Club"
+        }
+    ],
+
+    // SAVED POSTS
+
+    savedPosts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post"
+        }
+    ],
+
+    // STATS
+
+    /*totalEventsAttended: {
+        type: Number,
+        default: 0
+    },*/
+
+    totalCertificates: {
+        type: Number,
+        default: 0
+    },
+
+    // ACCOUNT STATUS
+
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+
+    isActive: {
+        type: Boolean,
+        default: true
     }
   },
   { timestamps: true }

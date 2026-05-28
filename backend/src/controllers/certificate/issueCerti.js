@@ -1,48 +1,49 @@
-const certificate = require("../../models/Certificate");
-const event = require("../../models/Event");
-const registration = require("../../models/Registration");
-const club = require("../../models/Club");
+const Certificate = require("../../models/Certificate");
+const Event = require("../../models/Event");
+const Registration = require("../../models/Registration");
+const Club = require("../../models/Club");
 
 const issueCerti = async (req,res,next) => {
     try{
-        const {eventId,userId,certificateUrl} = req.body;
+        const {eventId,userId,certificateUrl,certificateTitle} = req.body;
 
         //check event
-        const e = await event.findById(eventId);
-        if (!e) {
+        const event = await Event.findById(eventId);
+        if (!event) {
            return res.status(404).json({ message: "Event not found" });
         }
 
         //check event completed
-        if (new Date() < new Date(e.date)) {
+        if (new Date() < new Date(event.date)) {
       return res.status(400).json({ message: "Event not completed yet" });
     }
 
-    const c = await club.findById(e.club);
+    const club = await Club.findById(event.club);
 
-    if (req.user.role !== "admin" && c.clubHead.toString() !== req.user._id.toString()) {
+    if (req.user.role !== "admin" && club.clubHead.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    const r = await registration.findOne({
+    const registration = await Registration.findOne({
       user: userId,
       event: eventId
     });
 
-    if (!r) {
+    if (!registration) {
       return res.status(400).json({ message: "User not registered" });
     }
 
-    const certi = await certificate.create({
+    const certificate = await Certificate.create({
         user : userId,
         event : eventId,
         certificateUrl,
+        certificateTitle,
         issuedBy: req.user._id
     });
 
     res.status(201).json({
       message: "Certificate issued successfully",
-      certi
+      certificate
     });
 
     }

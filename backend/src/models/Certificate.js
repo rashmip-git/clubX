@@ -12,7 +12,14 @@ const certificateSchema = new mongoose.Schema({
     ref: "Event",
     required: true
   },
-
+  certificateTitle: {
+        type: String,
+        default: "Participation Certificate"
+    },
+    isValid: {
+        type: Boolean,
+        default: true
+    },
   certificateUrl: {
     type: String, // stored file URL (Cloudinary/local)
     required: true

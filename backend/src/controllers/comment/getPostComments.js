@@ -1,19 +1,21 @@
-const comment = require("../../models/Comments");
+const Comment = require("../../models/Comments");
 
 const getPostComments = async (req,res,next)=>{
     try{
         const {postId} = req.params;
 
-        const c = await comment.find({
-            post : postId
+        const comments = await Comment.find({
+            post : postId,
+            isActive : true
         })
         .populate("user","username")
+        .populate("parentComment")
         .sort({createdAt : -1});
 
 
         res.status(200).json({
-            count : c.length,
-            c
+            count : comments.length,
+            comments
         });
 
     }
